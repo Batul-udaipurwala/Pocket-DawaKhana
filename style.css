@@ -296,10 +296,10 @@ body {
 .btn-use { background: var(--primary-gradient); color: #ffffff; }
 .btn-delete { background: #f1f5f9; color: #64748b; }
 
-/* 7. PRESTIGE FORMS */
+/* 7. PRESTIGE FORMS (UPDATED FOR STRICT MOBILE FIT) */
 .med-form {
     background: var(--surface);
-    padding: 20px;
+    padding: 16px; /* Reduced slightly from 20px to save side space on small screens */
     border-radius: var(--radius);
     box-shadow: var(--card-shadow);
 }
@@ -307,13 +307,23 @@ body {
 .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
+    width: 100%; /* Ensures input groups never expand past parent container */
 }
 
+/* Updated grid rule: Stack fields vertically on very narrow screens, side-by-side only if space permits */
 .form-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(130deg, 1fr)); 
+    gap: 12px;
+    width: 100%;
+}
+
+@media (max-width: 360px) {
+    /* If your dad uses a smaller phone (like an older iPhone SE or basic Android), stack side-by-side elements vertically */
+    .form-row {
+        grid-template-columns: 1fr;
+    }
 }
 
 .form-group label {
@@ -323,14 +333,18 @@ body {
     color: #475569;
 }
 
+/* Box-sizing and max-width safety constraints applied to input elements */
 .form-group input, .form-group select, .form-group textarea {
-    padding: 14px;
+    padding: 12px;
     font-size: 0.95rem;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
     outline: none;
     transition: var(--transition);
+    width: 100%; /* Forces input fields to stay exactly inside their column container */
+    max-width: 100%; 
+    box-sizing: border-box; /* Forces browser to include padding in total width calculation */
 }
 
 .form-group input:focus, .form-group select:focus {
