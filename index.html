@@ -2,164 +2,290 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket DawaKhana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#00875a">
+    <title>Pocket DawaKhana - Family Medicine Cabinet</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div id="app-preloader">
-        <div class="loader-content">
-            <div class="pulse-icon">
-                <i class="fa-solid fa-heart-pulse"></i>
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="app-auth-screen" class="auth-overlay">
+        <div class="auth-card animate-popup">
+            <div class="logo-container">
+                <i class="fa-solid fa-mortar-pestle logo-icon"></i>
+                <h2>Pocket DawaKhana</h2>
             </div>
-            <h2>Pocket DawaKhana</h2>
-            <p>Organizing your family care...</p>
+            <p class="auth-subtitle">Shared Family Medicine Cabinet</p>
+            
+            <div class="auth-tabs-headers">
+                <button id="tab-btn-join" class="auth-tab-toggle active">Join Group</button>
+                <button id="tab-btn-create" class="auth-tab-toggle">New Group</button>
+            </div>
+
+            <div id="auth-join-form-panel">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-code-branch"></i> Family Code</label>
+                    <input type="text" id="auth-join-code" placeholder="e.g., sharma_family" class="popup-input">
+                </div>
+            </div>
+
+            <div id="auth-create-form-panel" class="hidden">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-plus-circle"></i> Create Family Code</label>
+                    <input type="text" id="auth-create-code" placeholder="e.g., kapoor_home" class="popup-input">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-user"></i> Your Name</label>
+                <input type="text" id="auth-user-name" placeholder="e.g., Dad, Mom, Rahul" class="popup-input">
+            </div>
+
+            <button class="btn-submit" id="auth-submit-btn">
+                <i class="fa-solid fa-right-to-bracket"></i> Enter Cabinet
+            </button>
         </div>
     </div>
 
+    <!-- MAIN APP CONTENT -->
     <div id="app-main-content" class="hidden">
         
+        <!-- HEADER -->
         <header class="app-header">
-            <div class="header-accent"></div>
-            <h1><i class="fa-solid fa-mortar-pestle"></i>Pocket DawaKhana</h1>
-            <p class="subtitle">Find medicine by symptom label</p>
+            <div class="header-main-row">
+                <div class="logo-area">
+                    <h1><i class="fa-solid fa-mortar-pestle"></i> DawaKhana</h1>
+                    <p class="subtitle" id="display-header-family-tag">Loading...</p>
+                </div>
+                <div class="account-dropdown-container">
+                    <select id="profile-dropdown" class="profile-select-menu">
+                        <option>Loading...</option>
+                    </select>
+                </div>
+            </div>
         </header>
 
+        <!-- MAIN CONTENT -->
         <main class="app-container">
 
+            <!-- HOME TAB -->
             <section id="tab-home" class="tab-content active">
+                <div id="live-alert-banner" class="alert-banner hidden"></div>
+
                 <div class="search-container">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" id="search-input" placeholder="What problem are you facing?">
+                    <input type="text" id="search-input" placeholder="Search medicines by name or symptom...">
                 </div>
 
-                <h3 class="section-title"><i class="fa-solid fa-bolt" style="color: #f2994a;"></i> Quick Tap Symptoms</h3>
-                <div class="symptom-grid" id="symptom-chips-container">
-                    </div>
+                <h3 class="section-title">
+                    <i class="fa-solid fa-bolt" style="color: #f2994a;"></i> Quick Symptoms
+                </h3>
+                <div class="symptom-grid" id="symptom-chips-container"></div>
 
-                <div class="section-header">
-                    <h3 class="section-title"><i class="fa-solid fa-prescription-bottle-medical"></i> Matching Packets</h3>
-                </div>
-                <div class="packet-list" id="home-packet-list">
-                    </div>
+                <h3 class="section-title">
+                    <i class="fa-solid fa-prescription-bottle-medical"></i> Search Results
+                </h3>
+                <div class="packet-list" id="home-packet-list"></div>
+                
+                <h3 class="section-title">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Recent Activity
+                </h3>
+                <div class="packet-list" id="activity-log-feed-list"></div>
             </section>
 
+            <!-- CABINET TAB -->
             <section id="tab-packets" class="tab-content">
                 <div class="section-header">
-                    <h3 class="section-title"><i class="fa-solid fa-boxes-stacked"></i> Current Inventory</h3>
-                    <span class="badge" id="total-packets-count">0 Packets</span>
+                    <h3 class="section-title"><i class="fa-solid fa-boxes-stacked"></i> Medicine Cabinet</h3>
+                    <span class="badge" id="total-packets-count">0 Items</span>
                 </div>
-                <div class="packet-list" id="all-packets-list">
-                    </div>
+                <div class="packet-list" id="all-packets-list"></div>
             </section>
 
+            <!-- ADD MEDICINE TAB -->
             <section id="tab-add" class="tab-content">
-                <h3 class="section-title"><i class="fa-solid fa-circle-plus"></i> Label a New Packet</h3>
+                <h3 class="section-title"><i class="fa-solid fa-circle-plus"></i> Add New Medicine</h3>
                 <form id="add-packet-form" class="med-form">
-                    
                     <div class="form-group">
-                        <label for="med-symptom">Symptom Written on Packet *</label>
-                        <input type="text" id="med-symptom" placeholder="e.g., Throat Ache, Gas, Fever" required>
+                        <label>Medicine / Symptom Name *</label>
+                        <input type="text" id="med-symptom" placeholder="e.g., Paracetamol, Cough Syrup" required>
                         <div class="suggested-chips" id="form-suggestions"></div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="med-type">Medicine Form</label>
+                            <label>Type</label>
                             <select id="med-type">
-                                <option value="Tablets">Tablets 💊</option>
-                                <option value="Capsules">Capsules 💊</option>
-                                <option value="Syrup">Syrup 🧴</option>
-                                <option value="Ointment">Ointment 🧴</option>
+                                <option value="Tablets">💊 Tablets</option>
+                                <option value="Capsules">💊 Capsules</option>
+                                <option value="Syrup">🧴 Syrup</option>
+                                <option value="Injection">💉 Injection</option>
+                                <option value="Cream">🧴 Cream/Ointment</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="med-unit">Packaging Unit</label>
+                            <label>Unit</label>
                             <select id="med-unit">
                                 <option value="Strips">Strips</option>
-                                <option value="Loose Count">Loose Count</option>
-                                <option value="Bottle">Bottle</option>
+                                <option value="Tablets">Tablets</option>
+                                <option value="ml">ml</option>
+                                <option value="Loose">Loose Count</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="med-qty">Current Quantity</label>
+                            <label>Quantity *</label>
                             <input type="number" id="med-qty" min="0" step="0.5" value="1" required>
                         </div>
                         <div class="form-group">
-                            <label for="med-expiry">Expiry Date (Optional)</label>
+                            <label>Low Stock Alert (≤)</label>
+                            <input type="number" id="med-min-alert" min="0" value="2">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expiry Date</label>
                             <input type="date" id="med-expiry">
+                        </div>
+                        <div class="form-group">
+                            <label>Prescription Photo</label>
+                            <label class="camera-upload-btn">
+                                <i class="fa-solid fa-camera"></i> Upload Photo
+                                <input type="file" id="med-photo" accept="image/*" style="display:none;">
+                            </label>
+                            <span id="photo-selected-indicator" class="file-indicator">No file selected</span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="med-notes">Color / Visual Notes</label>
-                        <textarea id="med-notes" rows="2" placeholder="e.g., Small round yellow pill, take after food"></textarea>
+                        <label>Instructions / Notes</label>
+                        <textarea id="med-notes" rows="2" placeholder="Dosage, timing, special instructions..."></textarea>
                     </div>
 
-                    <button type="submit" class="btn-submit">Save to Cabinet <i class="fa-solid fa-arrow-right"></i></button>
+                    <button type="submit" class="btn-submit" id="btn-form-submit">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Save to Cabinet
+                    </button>
                 </form>
             </section>
 
-            <section id="tab-expiry" class="tab-content">
-                <h3 class="section-title"><i class="fa-solid fa-triangle-exclamation"></i> Health Check System</h3>
-                <div class="expiry-summary">
-                    <div class="summary-card expired">
-                        <span class="count" id="count-expired">0</span>
-                        <span class="label">Expired (Discard)</span>
+            <!-- REMINDERS TAB -->
+            <section id="tab-reminders" class="tab-content">
+                <h3 class="section-title"><i class="fa-solid fa-bell"></i> Set New Reminder</h3>
+                <form id="add-reminder-form" class="med-form">
+                    <div class="form-group">
+                        <label>Medicine Name</label>
+                        <input type="text" id="rem-med-symptom" placeholder="e.g., Blood Pressure, Insulin" required>
                     </div>
-                    <div class="summary-card warning">
-                        <span class="count" id="count-soon">0</span>
-                        <span class="label">Expiring Soon</span>
+                    
+                    <div class="form-group">
+                        <label>Reminder Time</label>
+                        <input type="time" id="rem-time" required>
                     </div>
-                </div>
-                <div class="packet-list" id="expiry-packet-list">
+                    
+                    <div class="form-group">
+                        <label>Repeat Frequency</label>
+                        <select id="rem-frequency" class="frequency-select">
+                            <option value="daily">Daily 🔁</option>
+                            <option value="weekly">Weekly 📅</option>
+                            <option value="monthly">Monthly 📆</option>
+                        </select>
                     </div>
+                    
+                    <div id="weekly-day-selector" class="form-group hidden">
+                        <label>Select Days</label>
+                        <div class="days-grid">
+                            <label class="day-chip"><input type="checkbox" value="1"> Mon</label>
+                            <label class="day-chip"><input type="checkbox" value="2"> Tue</label>
+                            <label class="day-chip"><input type="checkbox" value="3"> Wed</label>
+                            <label class="day-chip"><input type="checkbox" value="4"> Thu</label>
+                            <label class="day-chip"><input type="checkbox" value="5"> Fri</label>
+                            <label class="day-chip"><input type="checkbox" value="6"> Sat</label>
+                            <label class="day-chip"><input type="checkbox" value="0"> Sun</label>
+                        </div>
+                    </div>
+                    
+                    <div id="monthly-date-selector" class="form-group hidden">
+                        <label>Day of Month (1-31)</label>
+                        <input type="number" id="rem-monthly-day" min="1" max="31" placeholder="e.g., 15">
+                    </div>
+                    
+                    <button type="submit" class="btn-submit" style="background: var(--warning)">
+                        <i class="fa-solid fa-clock"></i> Set Reminder
+                    </button>
+                </form>
+
+                <h3 class="section-title"><i class="fa-solid fa-clock-history"></i> Active Reminders</h3>
+                <div class="packet-list" id="reminders-vault-list"></div>
             </section>
 
-            <section id="tab-settings" class="tab-content">
-                <h3 class="section-title"><i class="fa-solid fa-shield-halved"></i> Security & Backup</h3>
-                <p class="settings-desc">Since data stays locally on your phone's browser, safely export a backup copy or restore it here anytime.</p>
-                <div class="settings-actions">
-                    <button id="btn-export" class="btn-secondary"><i class="fa-solid fa-cloud-arrow-down"></i> Download Data Backup</button>
-                    
-                    <label for="btn-import" class="btn-secondary import-label">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload Data Restore
-                    </label>
-                    <input type="file" id="btn-import" accept=".json" style="display:none;">
-                </div>
+            <!-- PRESCRIPTIONS TAB -->
+            <section id="tab-prescriptions" class="tab-content">
+                <h3 class="section-title"><i class="fa-solid fa-file-medical"></i> Prescription Vault</h3>
+                <div class="prescription-grid" id="prescriptions-vault-list"></div>
             </section>
 
         </main>
 
+        <!-- MODALS -->
+        <div id="add-user-modal" class="custom-popup-overlay hidden">
+            <div class="popup-box animate-popup">
+                <h3><i class="fa-solid fa-user-plus"></i> Add Family Member</h3>
+                <p class="modal-subtitle">They can join using the same group code</p>
+                <input type="text" id="new-user-name-field" placeholder="Name (e.g., Mom, Brother)" class="popup-input">
+                <div class="popup-actions">
+                    <button class="btn-popup-cancel" id="close-user-modal-btn">Cancel</button>
+                    <button class="btn-popup-confirm" id="submit-user-btn">Add Profile</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="details-edit-modal" class="custom-popup-overlay hidden">
+            <div class="popup-box edit-large animate-popup">
+                <div class="edit-modal-header">
+                    <h3><i class="fa-solid fa-circle-info"></i> Medicine Details</h3>
+                    <span class="close-edit" id="close-edit-modal-btn">&times;</span>
+                </div>
+                <div id="edit-modal-view-mode"></div>
+                <div id="edit-modal-form-mode" class="hidden"></div>
+            </div>
+        </div>
+
+        <div id="photo-modal" class="modal hidden">
+            <span class="close-modal" id="close-photo-modal-btn">&times;</span>
+            <img class="modal-content" id="modal-target-img" alt="Prescription">
+        </div>
+
+        <!-- BOTTOM NAVIGATION -->
         <nav class="bottom-nav">
             <button class="nav-item active" data-tab="tab-home">
                 <i class="fa-solid fa-house"></i>
                 <span>Home</span>
             </button>
             <button class="nav-item" data-tab="tab-packets">
-                <i class="fa-solid fa-prescription-bottle-medical"></i>
-                <span>Inventory</span>
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span>Cabinet</span>
             </button>
             <button class="nav-item btn-nav-add" data-tab="tab-add">
                 <i class="fa-solid fa-plus"></i>
             </button>
-            <button class="nav-item" data-tab="tab-expiry">
-                <i class="fa-solid fa-hourglass-half"></i>
+            <button class="nav-item" data-tab="tab-reminders">
+                <i class="fa-solid fa-bell"></i>
                 <span>Alerts</span>
             </button>
-            <button class="nav-item" data-tab="tab-settings">
-                <i class="fa-solid fa-sliders"></i>
-                <span>Backup</span>
+            <button class="nav-item" data-tab="tab-prescriptions">
+                <i class="fa-solid fa-file-invoice"></i>
+                <span>Slips</span>
             </button>
         </nav>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
-
 </body>
 </html>
